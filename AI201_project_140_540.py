@@ -1,22 +1,3 @@
-"""
-====================================================================
-COMPLETE STUDENT SCORE ANALYZER & GRADE PREDICTOR
-AI-201 Lab Project - Production Version (FIXED)
-====================================================================
-Team: Batool Binte Fazal (2024140), Rida Syed (2024540)
-
-Features:
-- OOP Design (6 classes)
-- 3 ML Models (Linear Regression, Logistic Regression, KNN)
-- Advanced NumPy operations (z-scores, percentiles, polynomial features)
-- Pandas analysis (GroupBy, Q&A style)
-- 4 Matplotlib visualizations
-- Exception handling throughout
-- Model persistence (Pickle)
-- Streamlit interface
-====================================================================
-"""
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -33,10 +14,7 @@ from pathlib import Path
 import warnings
 warnings.filterwarnings('ignore')
 
-
-# ====================================================================
-# CLASS 1: DATA CLEANER
-# ====================================================================
+#CLASS 1: DATA CLEANER
 class DataCleaner:
     """
     Handles data cleaning, validation, and encoding with exception handling
@@ -49,7 +27,7 @@ class DataCleaner:
     def clean_data(self, df):
         """Clean dataset: remove nulls, duplicates, validate columns"""
         try:
-            print("🧹 Starting data cleaning...")
+            print("Starting data cleaning...")
             
             initial_shape = df.shape
             
@@ -58,13 +36,10 @@ class DataCleaner:
             if missing_cols:
                 raise ValueError(f"Missing required columns: {missing_cols}")
             
-            # Remove null values
             df_clean = df.dropna()
             
-            # Remove duplicates
             df_clean = df_clean.drop_duplicates()
             
-            # Reset index
             df_clean = df_clean.reset_index(drop=True)
             
             final_shape = df_clean.shape
@@ -72,21 +47,21 @@ class DataCleaner:
             print(f"   Initial shape: {initial_shape}")
             print(f"   Final shape: {final_shape}")
             print(f"   Removed: {initial_shape[0] - final_shape[0]} rows")
-            print("   ✅ Data cleaning complete!\n")
+            print("Data cleaning complete!\n")
             
             return df_clean
             
         except ValueError as ve:
-            print(f"   ❌ Validation Error: {ve}")
+            print(f"Validation Error: {ve}")
             raise
         except Exception as e:
-            print(f"   ❌ Cleaning Error: {e}")
+            print(f"Cleaning Error: {e}")
             raise
     
     def encode_categorical(self, df):
         """Encode categorical variables using LabelEncoder"""
         try:
-            print("🔢 Encoding categorical variables...")
+            print("Encoding categorical variables...")
             
             categorical_cols = df.select_dtypes(include='object').columns
             
@@ -96,17 +71,15 @@ class DataCleaner:
                 self.label_encoders[col] = le
                 print(f"   Encoded: {col}")
             
-            print("   ✅ Encoding complete!\n")
+            print("Encoding complete!\n")
             return df
             
         except Exception as e:
-            print(f"   ❌ Encoding Error: {e}")
+            print(f"Encoding Error: {e}")
             raise
 
 
-# ====================================================================
-# CLASS 2: FEATURE ENGINEER (NumPy Heavy)
-# ====================================================================
+#CLASS 2: FEATURE ENGINEER
 class FeatureEngineer:
     """
     Creates advanced features using NumPy operations
@@ -118,7 +91,7 @@ class FeatureEngineer:
     def create_all_features(self, df):
         """Create all engineered features"""
         try:
-            print("⚙️ Engineering features with NumPy...")
+            print("Engineering features with NumPy...")
             
             df = self.create_basic_features(df)
             df = self.create_performance_index(df)
@@ -127,11 +100,11 @@ class FeatureEngineer:
             df, percentiles = self.calculate_percentile_ranks(df)
             df = self.calculate_risk_score(df)
             
-            print(f"   ✅ Created {len(self.features_created)} new features!\n")
+            print(f"Created {len(self.features_created)} new features!\n")
             return df, percentiles
             
         except Exception as e:
-            print(f"   ❌ Feature Engineering Error: {e}")
+            print(f"Feature Engineering Error: {e}")
             raise
     
     def create_basic_features(self, df):
@@ -147,7 +120,7 @@ class FeatureEngineer:
                 df['study_engagement'] = df['study time'].astype(float) * (df['average_score'] / 100)
                 self.features_created.extend(['study_efficiency', 'study_engagement'])
             
-            print("   ✓ Basic features created")
+            print("Basic features created")
             return df
             
         except Exception as e:
@@ -170,7 +143,7 @@ class FeatureEngineer:
             df['performance_index'] = performance_index
             self.features_created.append('performance_index')
             
-            print("   ✓ Performance Index created")
+            print("Performance Index created")
             return df
             
         except Exception as e:
@@ -188,7 +161,7 @@ class FeatureEngineer:
                 df['study_squared'] = np.power(study, 2)
                 
                 self.features_created.extend(['study_parent_interaction', 'study_squared'])
-                print("   ✓ Polynomial features created")
+                print("Polynomial features created")
             
             return df
             
@@ -224,7 +197,7 @@ class FeatureEngineer:
             )
             
             self.features_created.append('is_outlier')
-            print("   ✓ Z-score outliers detected")
+            print("Z-score outliers detected")
             return df
             
         except Exception as e:
@@ -252,7 +225,7 @@ class FeatureEngineer:
             }
             
             self.features_created.append('percentile_rank')
-            print("   ✓ Percentile ranks calculated")
+            print("Percentile ranks calculated")
             return df, percentiles
             
         except Exception as e:
@@ -283,16 +256,13 @@ class FeatureEngineer:
             df['risk_category'] = risk_categories
             self.features_created.extend(['risk_score', 'risk_category'])
             
-            print("   ✓ Risk scores calculated")
+            print("Risk scores calculated")
             return df
             
         except Exception as e:
             raise Exception(f"Risk score error: {e}")
 
-
-# ====================================================================
-# CLASS 3: VISUALIZER (Matplotlib - 4 Plots)
-# ====================================================================
+#CLASS 3: DATA VISUALIZATION
 class Visualizer:
     """
     Creates 4 matplotlib visualizations with advanced styling
@@ -333,7 +303,7 @@ class Visualizer:
             plt.tight_layout()
             return fig
         except Exception as e:
-            print(f"❌ Histogram error: {e}")
+            print(f"Histogram error: {e}")
             return None
     
     def plot_bar_chart(self, df):
@@ -417,7 +387,7 @@ class Visualizer:
             plt.tight_layout()
             return fig
         except Exception as e:
-            print(f"❌ Pie chart error: {e}")
+            print(f"Pie chart error: {e}")
             return None
     
     def plot_3d_scatter(self, df):
@@ -484,7 +454,7 @@ class Visualizer:
             plt.tight_layout()
             return fig
         except Exception as e:
-            print(f"❌ 3D plot error: {e}")
+            print(f" 3D plot error: {e}")
             return None
     
     def generate_all_plots(self, df):
@@ -498,16 +468,13 @@ class Visualizer:
             plots['pie_chart'] = self.plot_pie_chart(df)
             plots['3d_scatter'] = self.plot_3d_scatter(df)
             
-            print("✅ All visualizations complete!\n")
+            print("All visualizations complete!\n")
             return plots
         except Exception as e:
-            print(f"❌ Visualization error: {e}")
+            print(f"Visualization error: {e}")
             return {}
 
-
-# ====================================================================
-# CLASS 4: MODEL TRAINER (3 Models Only)
-# ====================================================================
+#CLASS 4: MODEL TRAINER 
 class ModelTrainer:
     """
     Trains 3 models: Linear Regression, Logistic Regression, KNN
@@ -548,18 +515,18 @@ class ModelTrainer:
             
             print(f"   Features: {X.shape[1]}")
             print(f"   Samples: {X.shape[0]}")
-            print("   ✅ Data prepared!\n")
+            print("Data prepared!\n")
             
             return X_scaled, y, X.columns.tolist()
             
         except Exception as e:
-            print(f"   ❌ Data preparation error: {e}")
+            print(f"Data preparation error: {e}")
             raise
     
     def train_linear_regression(self, X, y):
         """Model 1: Linear Regression for score prediction"""
         try:
-            print("🤖 Training Model 1: Linear Regression...")
+            print("Training Model 1: Linear Regression...")
             
             X_train, X_test, y_train, y_test = train_test_split(
                 X, y, test_size=0.2, random_state=42
@@ -577,18 +544,18 @@ class ModelTrainer:
             
             print(f"   RMSE: {rmse:.2f}")
             print(f"   R² Score: {r2:.3f}")
-            print("   ✅ Linear Regression trained!\n")
+            print("Linear Regression trained!\n")
             
             return model, rmse, r2
             
         except Exception as e:
-            print(f"   ❌ Linear Regression error: {e}")
+            print(f"Linear Regression error: {e}")
             raise
     
     def train_logistic_regression(self, X, y, threshold=50):
         """Model 2: Logistic Regression for pass/fail classification"""
         try:
-            print("🤖 Training Model 2: Logistic Regression (Pass/Fail)...")
+            print("Training Model 2: Logistic Regression (Pass/Fail)...")
             
             # Create binary target (pass/fail)
             y_binary = (y >= threshold).astype(int)
@@ -608,18 +575,18 @@ class ModelTrainer:
             
             print(f"   Accuracy: {accuracy*100:.2f}%")
             print(f"   Pass/Fail Threshold: {threshold}")
-            print("   ✅ Logistic Regression trained!\n")
+            print("Logistic Regression trained!\n")
             
             return model, accuracy
             
         except Exception as e:
-            print(f"   ❌ Logistic Regression error: {e}")
+            print(f"Logistic Regression error: {e}")
             raise
     
     def train_knn(self, X, y, threshold=50, n_neighbors=5):
         """Model 3: KNN for risk assessment"""
         try:
-            print("🤖 Training Model 3: KNN (Risk Assessment)...")
+            print("Training Model 3: KNN (Risk Assessment)...")
             
             # Ensure y is numeric
             y_numeric = pd.to_numeric(y, errors='coerce')
@@ -656,12 +623,12 @@ class ModelTrainer:
             
             print(f"   Accuracy: {accuracy*100:.2f}%")
             print(f"   K Neighbors: {n_neighbors}")
-            print("   ✅ KNN trained!\n")
+            print("KNN trained!\n")
             
             return model, accuracy
             
         except Exception as e:
-            print(f"   ❌ KNN error: {e}")
+            print(f"KNN error: {e}")
             raise
     
     def train_all_models(self, df, target='math score'):
@@ -674,7 +641,7 @@ class ModelTrainer:
             self.train_knn(X, y)
             
             print("=" * 60)
-            print("✅ ALL 3 MODELS TRAINED SUCCESSFULLY!")
+            print("ALL 3 MODELS TRAINED SUCCESSFULLY!")
             print("=" * 60 + "\n")
             
             return self.models, self.results, feature_names
@@ -683,10 +650,7 @@ class ModelTrainer:
             print(f"❌ Model training failed: {e}")
             raise
 
-
-# ====================================================================
 # CLASS 5: PREDICTOR
-# ====================================================================
 class Predictor:
     """
     Handles real-time predictions using trained models
@@ -703,7 +667,7 @@ class Predictor:
             prediction = self.models['linear_regression'].predict(input_scaled)[0]
             return round(float(prediction), 2)
         except Exception as e:
-            print(f"❌ Score prediction error: {e}")
+            print(f"Score prediction error: {e}")
             return None
     
     def predict_pass_fail(self, input_data):
@@ -713,7 +677,7 @@ class Predictor:
             prediction = self.models['logistic_regression'].predict(input_scaled)[0]
             return "Pass" if prediction == 1 else "Fail"
         except Exception as e:
-            print(f"❌ Pass/fail prediction error: {e}")
+            print(f"Pass/fail prediction error: {e}")
             return None
     
     def predict_risk(self, input_data):
@@ -723,7 +687,7 @@ class Predictor:
             prediction = self.models['knn'].predict(input_scaled)[0]
             return prediction
         except Exception as e:
-            print(f"❌ Risk prediction error: {e}")
+            print(f"Risk prediction error: {e}")
             return None
     
     def get_grade(self, score):
@@ -739,10 +703,7 @@ class Predictor:
         else:
             return 'F'
 
-
-# ====================================================================
-# CLASS 6: MODEL PERSISTENCE (Pickle)
-# ====================================================================
+#CLASS 6: MODEL PERSISTENCE (Pickle)
 class ModelPersistence:
     """
     Save and load trained models using Pickle
@@ -755,7 +716,7 @@ class ModelPersistence:
     def save_models(self, models, scaler, feature_names):
         """Save all models and scaler"""
         try:
-            print("💾 Saving models...")
+            print("Saving models...")
             
             # Save each model
             for name, model in models.items():
@@ -776,17 +737,17 @@ class ModelPersistence:
                 pickle.dump(feature_names, f)
             print("   ✓ Saved: feature names")
             
-            print("✅ All models saved!\n")
+            print("All models saved!\n")
             return True
             
         except Exception as e:
-            print(f"❌ Save error: {e}")
+            print(f"Save error: {e}")
             return False
     
     def load_models(self):
         """Load all saved models"""
         try:
-            print("📥 Loading saved models...")
+            print("Loading saved models...")
             
             models = {}
             
@@ -802,7 +763,7 @@ class ModelPersistence:
             if scaler_path.exists():
                 with open(scaler_path, 'rb') as f:
                     scaler = pickle.load(f)
-                print("   ✓ Loaded: scaler")
+                print("Loaded: scaler")
             else:
                 scaler = None
             
@@ -811,15 +772,15 @@ class ModelPersistence:
             if features_path.exists():
                 with open(features_path, 'rb') as f:
                     feature_names = pickle.load(f)
-                print("   ✓ Loaded: feature names")
+                print("Loaded: feature names")
             else:
                 feature_names = None
             
-            print("✅ All models loaded!\n")
+            print("All models loaded!\n")
             return models, scaler, feature_names
             
         except Exception as e:
-            print(f"❌ Load error: {e}")
+            print(f"Load error: {e}")
             return None, None, None
     
     def list_saved_models(self):
@@ -832,10 +793,7 @@ class ModelPersistence:
             print(f"❌ List error: {e}")
             return []
 
-
-# ====================================================================
 # PANDAS ANALYSIS MODULE
-# ====================================================================
 class PandasAnalyzer:
     """
     Advanced Pandas operations - Q&A style analysis
@@ -885,7 +843,7 @@ class PandasAnalyzer:
             qa_results['Q5: Highest scoring subject'] = f"{best_subject}: {subject_means[best_subject]:.2f}"
             print(f"   Q5: Highest scoring subject: {best_subject}\n")
             
-            print("✅ Q&A Analysis complete!\n")
+            print("Q&A Analysis complete!\n")
             return qa_results
             
         except Exception as e:
@@ -909,10 +867,7 @@ class PandasAnalyzer:
             print(f"❌ Demographic analysis error: {e}")
             return None
 
-
-# ====================================================================
 # STREAMLIT APPLICATION
-# ====================================================================
 def main():
     """Main Streamlit application"""
     
@@ -943,7 +898,7 @@ def main():
                 st.dataframe(df.head(10))
             
             # Data Cleaning
-            st.header("1️⃣ Data Cleaning & Preprocessing")
+            st.header("1.Data Cleaning & Preprocessing")
             with st.spinner("Cleaning data..."):
                 cleaner = DataCleaner()
                 df_clean = cleaner.clean_data(df)
@@ -951,7 +906,7 @@ def main():
                 st.success(f"✅ Cleaned! Final shape: {df_encoded.shape}")
             
             # Feature Engineering
-            st.header("2️⃣ Feature Engineering (NumPy)")
+            st.header("2.Feature Engineering (NumPy)")
             with st.spinner("Creating features..."):
                 engineer = FeatureEngineer()
                 df_features, percentiles = engineer.create_all_features(df_encoded)
@@ -965,7 +920,7 @@ def main():
                 st.success(f"✅ Created {len(engineer.features_created)} new features!")
             
             # Pandas Analysis
-            st.header("3️⃣ Data Analysis (Pandas)")
+            st.header("3.Data Analysis (Pandas)")
             with st.spinner("Analyzing data..."):
                 analyzer = PandasAnalyzer(df_features)
                 qa_results = analyzer.answer_research_questions()
@@ -976,7 +931,7 @@ def main():
                         st.info(f"**{question}:** {answer}")
             
             # Visualizations
-            st.header("4️⃣ Data Visualizations (Matplotlib)")
+            st.header("4.Data Visualizations (Matplotlib)")
             with st.spinner("Generating plots..."):
                 viz = Visualizer()
                 plots = viz.generate_all_plots(df_features)
@@ -1004,7 +959,7 @@ def main():
                         st.pyplot(plots['3d_scatter'])
             
             # Model Training
-            st.header("5️⃣ Machine Learning Models")
+            st.header("5. Machine Learning Models")
             
             if st.button("🚀 Train All Models", type="primary"):
                 with st.spinner("Training 3 models..."):
@@ -1037,7 +992,7 @@ def main():
                                  f"{results['knn']['Accuracy']*100:.2f}%")
             
             # Model Persistence
-            st.header("6️⃣ Model Persistence (Pickle)")
+            st.header("6.Model Persistence (Pickle)")
             
             col1, col2 = st.columns(2)
             
@@ -1140,9 +1095,5 @@ def main():
         - `writing score` (numeric 0-100)
         """)
 
-
-# ====================================================================
-# RUN APPLICATION
-# ====================================================================
 if __name__ == "__main__":
-    main()
+     main()
