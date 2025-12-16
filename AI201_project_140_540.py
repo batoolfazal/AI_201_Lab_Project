@@ -847,7 +847,7 @@ class PandasAnalyzer:
             return qa_results
             
         except Exception as e:
-            print(f"❌ Q&A Analysis error: {e}")
+            print(f"Q&A Analysis error: {e}")
             return {}
     
     def demographic_analysis(self):
@@ -864,7 +864,7 @@ class PandasAnalyzer:
                 return analysis
             return None
         except Exception as e:
-            print(f"❌ Demographic analysis error: {e}")
+            print(f"Demographic analysis error: {e}")
             return None
 
 # STREAMLIT APPLICATION
@@ -891,7 +891,7 @@ def main():
         try:
             # Load data
             df = pd.read_csv(uploaded_file)
-            st.sidebar.success(f"✅ Loaded {len(df)} records")
+            st.sidebar.success(f"Loaded {len(df)} records")
             
             # Show raw data
             with st.expander("📋 View Raw Data"):
@@ -903,7 +903,7 @@ def main():
                 cleaner = DataCleaner()
                 df_clean = cleaner.clean_data(df)
                 df_encoded = cleaner.encode_categorical(df_clean)
-                st.success(f"✅ Cleaned! Final shape: {df_encoded.shape}")
+                st.success(f"Cleaned! Final shape: {df_encoded.shape}")
             
             # Feature Engineering
             st.header("2.Feature Engineering (NumPy)")
@@ -917,7 +917,7 @@ def main():
                 col3.metric("75th Percentile", f"{percentiles['75th']:.1f}")
                 col4.metric("90th Percentile", f"{percentiles['90th']:.1f}")
                 
-                st.success(f"✅ Created {len(engineer.features_created)} new features!")
+                st.success(f"Created {len(engineer.features_created)} new features!")
             
             # Pandas Analysis
             st.header("3.Data Analysis (Pandas)")
@@ -954,7 +954,7 @@ def main():
                         st.pyplot(plots['pie_chart'])
                 
                 with tab4:
-                    st.subheader("⭐ 3D Performance Analysis (Advanced)")
+                    st.subheader("⭐ 3D Performance Analysis")
                     if plots.get('3d_scatter'):
                         st.pyplot(plots['3d_scatter'])
             
@@ -1018,12 +1018,12 @@ def main():
                         st.session_state['models'] = models
                         st.session_state['scaler'] = scaler
                         st.session_state['feature_names'] = feature_names
-                        st.success("✅ Models loaded successfully!")
+                        st.success("Models loaded successfully!")
                     else:
-                        st.error("❌ No saved models found!")
+                        st.error("No saved models found!")
             
             # Predictions
-            st.header("7️⃣ Make Predictions")
+            st.header("7. Make Predictions")
             
             if 'models' in st.session_state:
                 st.subheader("Enter Student Information")
@@ -1097,3 +1097,4 @@ def main():
 
 if __name__ == "__main__":
      main()
+
